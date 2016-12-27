@@ -52,6 +52,8 @@ public class SavePriceMargin {
 
     private static PriceMarginService priceMarginService = new PriceMarginService();
 
+    private static long tickerDepthTime = 0;
+
     //比较价格,3s比较一次
     public static void startComparePrice(BigDecimal okcoinPrice) {
         Long now;
@@ -60,6 +62,7 @@ public class SavePriceMargin {
         lastTime = now;
         lock.lock();
         try {
+            tickerDepthTime = System.currentTimeMillis();
             BigDecimal huobiPrice = huobiApi.ticker();//获取火币lastPrice
             if (huobiPrice == null) {
                 log.error("huobi ticker 获取失败！");
@@ -92,7 +95,8 @@ public class SavePriceMargin {
      */
     private static void trade(BigDecimal okPrice, BigDecimal hbPrice) {
         if (priceM.equals(hasCoin)) {//符合交易条件
-            boolean checkDepth = checkDepth(okPrice, hbPrice, priceM);
+            boolean checkDepth = checkDepth(priceM);
+            log.info("从抓取huobi Ticker到用时:" + (tickerDepthTime - System.currentTimeMillis()));
             if (!checkDepth) {
                 log.warn("|||||||||||||||||||||||||||||||||||||深度不符合要求||||||||||||||||||||||||||||||||||||||||||||||");
                 return;
@@ -146,7 +150,7 @@ public class SavePriceMargin {
         }
     }
 
-    private static boolean checkDepth(BigDecimal okPrice, BigDecimal hbPrice, String priceM) {
+    private static boolean checkDepth(String priceM) {
         Map<String, BigDecimal[]> huobiDepth = huobiApi.depth();
         if (huobiDepth == null) {
             log.error("深度获取失败");
@@ -157,7 +161,7 @@ public class SavePriceMargin {
         BigDecimal[] okAsks = huobiDepth.get("okAsks");
         BigDecimal[] okBids = huobiDepth.get("okBids");
         if (priceM.equals(a)) {//ok价高
-            if (okBids[0].subtract(hbAsks[0]).compareTo(priceMargin) >= 0)//比较以okcoin的深度卖出，huobi买入是否有利润
+            if (okBids[0].subtract(hbAsks[0]).compareTo(priceMargin.divide(BigDecimal.valueOf(2), 2)) >= 0)//比较以okcoin的深度卖出，huobi买入是否有利润
                 return true;
             if (okBids[1].compareTo(tradeAmount) == -1
                     || hbAsks[1].compareTo(tradeAmount) == -1)//深度数量不足

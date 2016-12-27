@@ -258,7 +258,7 @@ public class HuobiService extends Base {
     }
 
     private String hbTickerUrl = "http://api.huobi.com/staticmarket/ticker_btc_json.js";
-    private int depthSize = 3;
+    private int depthSize = 2;
     private String depthUrl = "http://api.huobi.com/staticmarket/depth_btc_" + depthSize + ".js";
     private String okDepthUrl = "https://www.okcoin.cn/api/v1/depth.do?symbol=btc_cny&size=" + depthSize;
 
@@ -276,7 +276,7 @@ public class HuobiService extends Base {
      * @return
      */
     public Map<String, BigDecimal[]> depth() {
-        Map<String, BigDecimal[]> map = new HashMap<String, BigDecimal[]>();
+        Map<String, BigDecimal[]> map = new HashMap<>();
         String ret = URL.sendGet(depthUrl);
         String okRet = URL.sendGet(okDepthUrl);
         if (ret == null)
