@@ -81,7 +81,7 @@ public class HttpUtil {
      * @throws IOException
      * @throws ClientProtocolException
      */
-    public static <T> T post(String url, Map<String, Object> data, ResponseHandler<T> rh) throws ClientProtocolException,
+    public static <T> T post(String url, Map<String, Object> data, ResponseHandler<T> rh) throws
             IOException {
         List<NameValuePair> nvps = new ArrayList<NameValuePair>();
         for (Map.Entry<String, Object> me : data.entrySet()) {

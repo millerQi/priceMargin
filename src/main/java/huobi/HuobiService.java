@@ -4,8 +4,6 @@ import arbitrage.URL;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -206,7 +204,7 @@ public class HuobiService extends Base {
      * @throws Exception
      */
     public String sell(int coinType, String price, String amount, Integer tradeid, String method) {
-        TreeMap<String, Object> paraMap = new TreeMap<String, Object>();
+        TreeMap<String, Object> paraMap = new TreeMap<>();
         paraMap.put("method", method);
         paraMap.put("created", getTimestamp());
         paraMap.put("access_key", HUOBI_ACCESS_KEY);
@@ -238,7 +236,7 @@ public class HuobiService extends Base {
      */
     public String sellMarket(int coinType, String amount, Integer tradeid, String method)
             throws Exception {
-        TreeMap<String, Object> paraMap = new TreeMap<String, Object>();
+        TreeMap<String, Object> paraMap = new TreeMap<>();
         paraMap.put("method", method);
         paraMap.put("created", getTimestamp());
         paraMap.put("access_key", HUOBI_ACCESS_KEY);

@@ -1,0 +1,6 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="price_margin">
+    <output-path>$PROJECT_DIR$/out/artifacts/price_margin</output-path>
+    <root id="archive" name="price_margin.jar" />
+  </artifact>
+</component>
