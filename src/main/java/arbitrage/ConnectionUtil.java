@@ -1,10 +1,6 @@
 package arbitrage;
 
-import com.alibaba.druid.pool.DruidDataSource;
-import org.springframework.core.io.support.PropertiesLoaderUtils;
-
 import java.sql.*;
-import java.util.Properties;
 
 /**
  * Created by Miller on 2016/12/24.
