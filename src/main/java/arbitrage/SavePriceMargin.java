@@ -34,7 +34,7 @@ public class SavePriceMargin {
 
     private static String priceM;//比较价差 okcoin价高且价差大于priceMargin为1 火币大为-1  交易前赋值
 
-    public static String hasCoin = "-1";//启动时检查账户并赋值,1为okcoin持币 0 为都不持币 -1为火币网持币 交易后更改值
+    public static String hasCoin = "1";//启动时检查账户并赋值,1为okcoin持币 0 为都不持币 -1为火币网持币 交易后更改值
 
     private static Log log = LogFactory.getLog(SavePriceMargin.class);
 

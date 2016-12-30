@@ -5,7 +5,7 @@
     <artifactId>priceMargin</artifactId>
     <packaging>jar</packaging>
     <version>1.0</version>
-    <name>com.miller.daulThrust Maven Webapp</name>
+    <name>com.miller.priceMargin Maven strategy jar</name>
     <url>http://maven.apache.org</url>
     <dependencies>
         <dependency>
@@ -77,6 +77,14 @@
             <artifactId>httpclient</artifactId>
             <version>4.3.3</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>druid</artifactId>-->
+            <!--<version>1.0.18</version>-->
+        <!--</dependency>-->
+
 
     </dependencies>
 
