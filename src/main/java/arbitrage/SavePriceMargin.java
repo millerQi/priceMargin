@@ -98,7 +98,7 @@ public class SavePriceMargin {
             boolean checkDepth = checkDepth(priceM);
             log.info("从抓取huobi Ticker到用时:" + (tickerDepthTime - System.currentTimeMillis()));
             if (!checkDepth) {
-                log.warn("|||||||||||||||||||||||||||||||||||||深度不符合要求||||||||||||||||||||||||||||||||||||||||||||||");
+                log.warn("|||depth does'nt conform to the requirement |||");
                 return;
             }
             String amount = String.valueOf(tradeAmount);
@@ -186,6 +186,7 @@ public class SavePriceMargin {
         private BigDecimal okPrice;
         private BigDecimal hbPrice;
         private String priceM;
+        private int count = 0;
 
         ReckonGains(long okTID, long hbTID, BigDecimal okPrice, BigDecimal hbPrice, String priceM) {
             this.okTID = okTID;
@@ -196,14 +197,25 @@ public class SavePriceMargin {
         }
 
         public void run() {
-            try {
-                Thread.sleep(888);//okcoin和huobi订单信息延时
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            count++;
+            sleep(300);
+
             String ret = huobiApi.getOrderInfo(1, hbTID, "order_info");
             ApiResult.OrderInfo hbOrderInfo = handleOrderInfo(ret);
             ApiResult.OrderInfo okOrderInfo = ApiResult.getOrderInfoRet(okApiKey, okSecretKey, "btc_cny", String.valueOf(okTID));
+            /**订单可能未成交，或者数据没同步 递归调用**/
+            BigDecimal hbDeal = hbOrderInfo.getDealAmount();
+            BigDecimal okDeal = okOrderInfo.getDealAmount();
+            if (hbDeal.compareTo(BigDecimal.ZERO) == 0
+                    || okDeal.compareTo(BigDecimal.ZERO) == 0
+                    || hbDeal.compareTo(hbOrderInfo.getAmount()) == -1
+                    || okDeal.compareTo(okOrderInfo.getAmount()) == -1) {
+                if (count > 20) {
+                    log.error("订单详情调用失败或没有完全成交，数据库订单少记录一笔！hbTid = " + hbTID + ",okTid = " + okTID);
+                    return;
+                } else
+                    run();
+            }
             BigDecimal okAvgPrice = okOrderInfo.getAvgPrice();
             BigDecimal hbAvgPrice = hbOrderInfo.getAvgPrice();
             BigDecimal expectGains, realGains;
@@ -290,9 +302,12 @@ public class SavePriceMargin {
 
     }
 
-    public static void main(String[] args) {
-        ApiResult.Trade trade = ApiResult.getTradeRet(okApiKey, okSecretKey, "btc_cny", "5000", "0.01", "buy");
-        System.out.println();
+    public static void sleep(long mills) {
+        try {
+            Thread.sleep(mills);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 }
